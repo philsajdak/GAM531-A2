@@ -1,44 +1,50 @@
-﻿using OpenTK.Mathematics;
+﻿using System;
+using OpenTK.Mathematics;
 
-// part 1 - vectors
-Console.WriteLine($"Part 1: Vectors");
-Console.WriteLine($"==============");
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        // part 1: vector operations
+        Console.WriteLine("Part 1: Vector Operations");
+        Console.WriteLine("=================");
 
-Vector3 vA = new Vector3(1, 2, 3);
-Vector3 vB = new Vector3(2, 3, 4);
-float fDot = Vector3.Dot(vA, vB); 
-Vector3 vCross = Vector3.Cross(vA, vB);
-Vector3 vNormalized = Vector3.Normalize(vCross);
+        Vector3 vA = new Vector3(1, 2, 3);
+        Vector3 vB = new Vector3(2, 3, 4);
 
-Console.WriteLine($"Dot = {fDot}");
-Console.WriteLine($"Cross = {vCross}");
-Console.WriteLine($"Normalized = {vNormalized}\n");
+        Console.WriteLine($"Vector A: {vA}");
+        Console.WriteLine($"Vector B: {vB}");
 
-// part 2 - matrix
-// basically we scale a point by (3x, 1.5y, 0.5z), then rotatie it 50 degrees around y axis, then translate it by (15, 5, 0)
-Console.WriteLine($"Part 2: Matrix");
-Console.WriteLine($"==============");
+        Vector3 addition = MathLibrary.AddVectors(vA, vB);
+        Vector3 subtraction = MathLibrary.SubtractVectors(vA, vB);
+        float dotProduct = MathLibrary.DotProduct(vA, vB);
+        Vector3 crossProduct = MathLibrary.CrossProduct(vA, vB);
 
-Matrix4 scaleMatrix = Matrix4.CreateScale(3.0f, 1.5f, 0.5f);
-Matrix4 rotationMatrix = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(50));
-Matrix4 translationMatrix = Matrix4.CreateTranslation(15.0f, 5.0f, 0.0f);
+        Console.WriteLine($"Addition: {addition}");
+        Console.WriteLine($"Subtraction: {subtraction}");
+        Console.WriteLine($"Dot Product: {dotProduct}");
+        Console.WriteLine($"Cross Product: {crossProduct}\n");
 
-// order matters
-Matrix4 transformMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+        // part 2: matrix operations and transforming vector
+        Console.WriteLine("Part 2: Matrix Operations and Transformations");
+        Console.WriteLine("====================================");
 
-Vector3 originalPoint = new Vector3(1.0f, 1.0f, 1.0f);
-Vector3 transformedPoint = Vector3.TransformPosition(originalPoint, transformMatrix);
+        Matrix4 identityMatrix = MathLibrary.CreateIdentityMatrix();
+        Matrix4 scaleMatrix = MathLibrary.CreateScaleMatrix(2.0f, 1.5f, 0.5f);
+        Matrix4 rotationMatrix = MathLibrary.CreateRotationYMatrix(MathLibrary.DegreesToRadians(45));
 
-Console.WriteLine($"Original = {originalPoint}");
-Console.WriteLine($"Transformed = {transformedPoint}\n");
+        Console.WriteLine($"Identity Matrix:\n{identityMatrix}");
 
-// part 3 - quaternion
-Console.WriteLine($"Part 3: Quaternion");
-Console.WriteLine($"==============");
+        Matrix4 combinedMatrix = MathLibrary.MultiplyMatrices(scaleMatrix, rotationMatrix);
+        Console.WriteLine($"Scale * Rotation Matrix:\n{combinedMatrix}");
 
-Quaternion rotation = Quaternion.FromAxisAngle(Vector3.UnitY, MathHelper.DegreesToRadians(50));
-Vector3 originalVector = new Vector3(1.0f, 0.0f, 0.0f); // Point along X-axis
-Vector3 rotatedVector = Vector3.Transform(originalVector, rotation);
+        Vector3 originalVector = new Vector3(1.0f, 1.0f, 1.0f);
+        Console.WriteLine($"Original Vector: {originalVector}");
 
-Console.WriteLine($"Original = {originalVector}");
-Console.WriteLine($"Rotated = {rotatedVector}");
+        Vector3 scaledVector = MathLibrary.TransformVector(originalVector, scaleMatrix);
+        Console.WriteLine($"After Scaling: {scaledVector}");
+
+        Vector3 rotatedVector = MathLibrary.TransformVector(originalVector, rotationMatrix);
+        Console.WriteLine($"After Rotation: {rotatedVector}");
+    }
+}
